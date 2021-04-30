@@ -18,7 +18,7 @@ Notice that we use `scipy=1.2.1` .
 
 ### 2. Download the pretrained weights
 
-Down load the pretrained weights at [here](https://drive.google.com/u/0/uc?id=1smvZiOXByN2qIMEQ_pjCSUSA6NjHaSLN&export=download). Extract in to `./out`, such that the weights file is at `/out/default/checkpoint.pth.tar`.
+Down load the pretrained weights at [here](https://www.cs.ubc.ca/research/kmyi_data/files/2021/cotr/default.zip). Extract in to `./out`, such that the weights file is at `/out/default/checkpoint.pth.tar`.
 
 ### 3. Single image pair demo
 

@@ -62,8 +62,8 @@ If you use this code in your research, cite the paper:
 
 ```
 @article{jiang2021cotr,
-  title={COTR: Correspondence Transformer for Matching Across Images},
-  author={Wei Jiang, Eduard Trulls, Jan Hosang, Andrea Tagliasacchi, Kwang Moo Yi},
+  title={{COTR: Correspondence Transformer for Matching Across Images}},
+  author={Wei Jiang and Eduard Trulls and Jan Hosang and Andrea Tagliasacchi and Kwang Moo Yi},
   booktitle={arXiv preprint},
   publisher_page={https://arxiv.org/abs/2103.14167},
   year={2021}

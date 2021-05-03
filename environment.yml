@@ -8,25 +8,31 @@ dependencies:
   - blas=1.0=mkl
   - bzip2=1.0.8=h7b6447c_0
   - ca-certificates=2021.4.13=h06a4308_1
+  - cairo=1.16.0=hf32fb01_1
   - certifi=2020.12.5=py37h06a4308_0
   - cudatoolkit=10.2.89=hfd86e86_1
   - cycler=0.10.0=py37_0
   - dbus=1.13.18=hb2f20db_0
   - decorator=5.0.6=pyhd3eb1b0_0
   - expat=2.3.0=h2531618_2
-  - ffmpeg=4.3=hf484d3e_0
+  - ffmpeg=4.0=hcdf2ecd_0
   - fontconfig=2.13.1=h6c09931_0
+  - freeglut=3.0.0=hf484d3e_5
   - freetype=2.10.4=h5ab3b9f_0
   - glib=2.68.1=h36276a3_0
   - gmp=6.2.1=h2531618_2
   - gnutls=3.6.15=he1e5248_0
+  - graphite2=1.3.14=h23475e2_0
   - gst-plugins-base=1.14.0=h8213a91_2
   - gstreamer=1.14.0=h28cd5cc_2
+  - harfbuzz=1.8.8=hffaf4a1_0
+  - hdf5=1.10.2=hba1933b_1
   - icu=58.2=he6710b0_3
   - imageio=2.9.0=pyhd3eb1b0_0
   - intel-openmp=2021.2.0=h06a4308_610
   - ipython=7.22.0=py37hb070fc8_0
   - ipython_genutils=0.2.0=pyhd3eb1b0_1
+  - jasper=2.0.14=h07fcdf6_1
   - jedi=0.17.0=py37_0
   - jpeg=9b=h024ee3a_2
   - kiwisolver=1.3.1=py37h2531618_0
@@ -36,8 +42,11 @@ dependencies:
   - libffi=3.3=he6710b0_2
   - libgcc-ng=9.1.0=hdf63c60_0
   - libgfortran-ng=7.3.0=hdf63c60_0
+  - libglu=9.0.0=hf484d3e_1
   - libiconv=1.15=h63c8f33_5
   - libidn2=2.3.0=h27cfd23_0
+  - libopencv=3.4.2=hb342d67_1
+  - libopus=1.3.1=h7b6447c_0
   - libpng=1.6.37=hbc83047_0
   - libstdcxx-ng=9.1.0=hdf63c60_0
   - libtasn1=4.16.0=h27cfd23_0
@@ -45,6 +54,7 @@ dependencies:
   - libunistring=0.9.10=h27cfd23_0
   - libuuid=1.0.3=h1bed415_2
   - libuv=1.40.0=h7b6447c_0
+  - libvpx=1.7.0=h439df22_0
   - libxcb=1.14=h7b6447c_0
   - libxml2=2.9.10=hb55368b_3
   - lz4-c=1.9.3=h2531618_0
@@ -59,7 +69,8 @@ dependencies:
   - ninja=1.10.2=hff7bd54_1
   - numpy=1.19.2=py37h54aff64_0
   - numpy-base=1.19.2=py37hfa32c7d_0
-  - olefile=0.46=py_0
+  - olefile=0.46=py37_0
+  - opencv=3.4.2=py37h6fd60c2_1
   - openh264=2.1.0=hd408876_0
   - openssl=1.1.1k=h27cfd23_0
   - parso=0.8.2=pyhd3eb1b0_0
@@ -68,8 +79,10 @@ dependencies:
   - pickleshare=0.7.5=pyhd3eb1b0_1003
   - pillow=8.2.0=py37he98fc37_0
   - pip=21.0.1=py37h06a4308_0
+  - pixman=0.40.0=h7b6447c_0
   - prompt-toolkit=3.0.17=pyh06a4308_0
   - ptyprocess=0.7.0=pyhd3eb1b0_2
+  - py-opencv=3.4.2=py37hb342d67_1
   - pygments=2.8.1=pyhd3eb1b0_0
   - pyparsing=2.4.7=pyhd3eb1b0_0
   - pyqt=5.9.2=py37h05f1152_2
@@ -81,12 +94,13 @@ dependencies:
   - scipy=1.2.1=py37h7c811a0_0
   - setuptools=52.0.0=py37h06a4308_0
   - sip=4.19.8=py37hf484d3e_0
-  - six=1.15.0=pyhd3eb1b0_0
+  - six=1.15.0=py37h06a4308_0
   - sqlite=3.35.4=hdfb4753_0
   - tk=8.6.10=hbc83047_0
   - torchaudio=0.8.1=py37
-  - torchvision=0.9.1=py37_cu102
+  - torchvision=0.2.1=py37_0
   - tornado=6.1=py37h27cfd23_0
+  - tqdm=4.59.0=pyhd3eb1b0_1
   - traitlets=5.0.5=pyhd3eb1b0_0
   - typing_extensions=3.7.4.3=pyha847dfd_0
   - vispy=0.5.3=py37hee6b756_0
@@ -95,4 +109,3 @@ dependencies:
   - xz=5.2.5=h7b6447c_0
   - zlib=1.2.11=h7b6447c_3
   - zstd=1.4.9=haebb681_0
-

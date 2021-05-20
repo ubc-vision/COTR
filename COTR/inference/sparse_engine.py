@@ -74,7 +74,7 @@ class SparseEngine():
         idx = np.array(idx)
         if corrs.shape[0] > 0:
             corrs -= np.array([offset_x_from, offset_y_from, offset_x_to, offset_y_to])
-            if img_a_shape is not None and img_b_shape is not None:
+            if img_a_shape is not None and img_b_shape is not None and not force:
                 border_mask = np.prod(corrs < np.concatenate([img_a_shape[::-1], img_b_shape[::-1]]), axis=1)
                 border_mask = (np.prod(corrs > np.array([0, 0, 0, 0]), axis=1) * border_mask).astype(np.bool)
                 corrs = corrs[border_mask]

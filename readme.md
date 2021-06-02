@@ -56,6 +56,16 @@ Example:
   <img src="./sample_data/imgs/paint_output.png" height="300">
 </p>
 
+### 6. Guided matching demo
+
+`python demo_guided_matching.py --load_weights="default"`
+
+<p align="center">
+  <img src="./sample_data/imgs/guided_matching_output.png" height="300">
+</p>
+
+
+
 ## Citation
 
 If you use this code in your research, cite the paper:

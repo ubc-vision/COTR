@@ -61,10 +61,17 @@ Example:
 `python demo_guided_matching.py --load_weights="default"`
 
 <p align="center">
-  <img src="./sample_data/imgs/guided_matching_output.png" height="300">
+  <img src="./sample_data/imgs/guided_matching_output.png" height="400">
 </p>
 
+## Faster Inference
 
+We added a faster inference engine.
+The idea is that for each network invocation, we want to solve more queries. We search for nearby queries and group them on the fly.
+*Note: Faster inference engine has slightly worse spatial accuracy.*
+Guided matching demo now supports faster inference.
+The time consumption for default inference engine is ~216s, and the time consumption for faster inference engine is ~79s, on 1080Ti.
+Try `python demo_guided_matching.py --load_weights="default" --faster_infer=yes`.
 
 ## Citation
 

@@ -18,7 +18,7 @@ from COTR.utils import utils, debug_utils
 from COTR.models import build_model
 from COTR.options.options import *
 from COTR.options.options_utils import *
-from COTR.inference.sparse_engine import SparseEngine
+from COTR.inference.sparse_engine import SparseEngine, FasterSparseEngine
 
 utils.fix_randomness(0)
 torch.set_grad_enabled(False)
@@ -36,9 +36,15 @@ def main(opt):
     kp_a = np.load('./sample_data/21526113_4379776807.jpg.disk.kpts.npy')
     kp_b = np.load('./sample_data/21126421_4537535153.jpg.disk.kpts.npy')
 
-    engine = SparseEngine(model, 32, mode='tile')
+    if opt.faster_infer:
+        engine = FasterSparseEngine(model, 32, mode='tile')
+    else:
+        engine = SparseEngine(model, 32, mode='tile')
+    t0 = time.time()
     corrs_a_b = engine.cotr_corr_multiscale(img_a, img_b, np.linspace(0.5, 0.0625, 4), 1, max_corrs=kp_a.shape[0], queries_a=kp_a, force=True)
     corrs_b_a = engine.cotr_corr_multiscale(img_b, img_a, np.linspace(0.5, 0.0625, 4), 1, max_corrs=kp_b.shape[0], queries_a=kp_b, force=True)
+    t1 = time.time()
+    print(f'COTR spent {t1-t0} seconds.')
     inds_a_b = np.argmin(distance_matrix(corrs_a_b[:, 2:], kp_b), axis=1)
     matched_a_b = np.stack([np.arange(kp_a.shape[0]), inds_a_b]).T
     inds_b_a = np.argmin(distance_matrix(corrs_b_a[:, 2:], kp_a), axis=1)
@@ -63,6 +69,7 @@ if __name__ == "__main__":
     set_COTR_arguments(parser)
     parser.add_argument('--out_dir', type=str, default=general_config['out'], help='out directory')
     parser.add_argument('--load_weights', type=str, default=None, help='load a pretrained set of weights, you need to provide the model id')
+    parser.add_argument('--faster_infer', type=str2bool, default=False, help='use fatser inference')
 
     opt = parser.parse_args()
     opt.command = ' '.join(sys.argv)

@@ -249,3 +249,166 @@ class SparseEngine():
         if len(out) == 1:
             out = out[0]
         return out
+
+
+class FasterSparseEngine(SparseEngine):
+    '''
+    search and merge nearby tasks to accelerate inference speed.
+    It will make spatial accuracy slightly worse.
+    '''
+
+    def __init__(self, model, batch_size, mode='stretching', max_load=256):
+        super().__init__(model, batch_size, mode=mode)
+        self.max_load = max_load
+
+    def infer_batch_grouped(self, img_batch, query_batch):
+        device = next(self.model.parameters()).device
+        img_batch = img_batch.to(device)
+        query_batch = query_batch.to(device)
+        out = self.model(img_batch, query_batch)['pred_corrs'].clone().detach().cpu().numpy()
+        return out
+
+    def get_tasks_map(self, zoom, tasks):
+        maps = []
+        ids = []
+        for i, t in enumerate(tasks):
+            if t.status == 'unfinished' and t.submitted == False and t.cur_zoom == zoom:
+                t_info = t.peek()
+                point = np.concatenate([t_info['loc_from'], t_info['loc_to']])
+                maps.append(point)
+                ids.append(i)
+        return np.array(maps), np.array(ids)
+
+    def form_squad(self, zoom, pilot, pilot_id, tasks, tasks_map, task_ids, bookkeeping):
+        assert pilot.status == 'unfinished' and pilot.submitted == False and pilot.cur_zoom == zoom
+        SAFE_AREA = 0.5
+        pilot_info = pilot.peek()
+        pilot_from_center_x = pilot_info['patch_from'].x + pilot_info['patch_from'].w/2
+        pilot_from_center_y = pilot_info['patch_from'].y + pilot_info['patch_from'].h/2
+        pilot_from_left  = pilot_from_center_x - pilot_info['patch_from'].w/2 * SAFE_AREA
+        pilot_from_right = pilot_from_center_x + pilot_info['patch_from'].w/2 * SAFE_AREA
+        pilot_from_upper = pilot_from_center_y - pilot_info['patch_from'].h/2 * SAFE_AREA
+        pilot_from_lower = pilot_from_center_y + pilot_info['patch_from'].h/2 * SAFE_AREA
+        
+        pilot_to_center_x = pilot_info['patch_to'].x + pilot_info['patch_to'].w/2
+        pilot_to_center_y = pilot_info['patch_to'].y + pilot_info['patch_to'].h/2
+        pilot_to_left  = pilot_to_center_x - pilot_info['patch_to'].w/2 * SAFE_AREA
+        pilot_to_right = pilot_to_center_x + pilot_info['patch_to'].w/2 * SAFE_AREA
+        pilot_to_upper = pilot_to_center_y - pilot_info['patch_to'].h/2 * SAFE_AREA
+        pilot_to_lower = pilot_to_center_y + pilot_info['patch_to'].h/2 * SAFE_AREA
+
+        img, query = pilot.get_task()
+        assert pilot.submitted == True
+        members = [pilot]
+        queries = [query]
+        bookkeeping[pilot_id] = False
+
+        loads = np.where(((tasks_map[:, 0] > pilot_from_left) &
+                          (tasks_map[:, 0] < pilot_from_right) &
+                          (tasks_map[:, 1] > pilot_from_upper) &
+                          (tasks_map[:, 1] < pilot_from_lower) &
+                          (tasks_map[:, 2] > pilot_to_left) &
+                          (tasks_map[:, 2] < pilot_to_right) &
+                          (tasks_map[:, 3] > pilot_to_upper) &
+                          (tasks_map[:, 3] < pilot_to_lower)) *
+                         bookkeeping)[0][: self.max_load]
+
+        for ti in task_ids[loads]:
+            t = tasks[ti]
+            assert t.status == 'unfinished' and t.submitted == False and t.cur_zoom == zoom
+            _, query = t.get_task_pilot(pilot)
+            members.append(t)
+            queries.append(query)
+        queries = torch.stack(queries, axis=1)
+        bookkeeping[loads] = False
+        return members, img, queries, bookkeeping
+
+    def form_grouped_batch(self, zoom, tasks):
+        counter = 0
+        task_ref = []
+        img_batch = []
+        query_batch = []
+        tasks_map, task_ids = self.get_tasks_map(zoom, tasks)
+        shuffle = np.random.permutation(tasks_map.shape[0])
+        tasks_map = np.take(tasks_map, shuffle, axis=0)
+        task_ids = np.take(task_ids, shuffle, axis=0)
+        bookkeeping = np.ones_like(task_ids).astype(bool)
+
+        for i, ti in enumerate(task_ids):
+            t = tasks[ti]
+            if t.status == 'unfinished' and t.submitted == False and t.cur_zoom == zoom:
+                members, img, queries, bookkeeping = self.form_squad(zoom, t, i, tasks, tasks_map, task_ids, bookkeeping)
+                task_ref.append(members)
+                img_batch.append(img)
+                query_batch.append(queries)
+                counter += 1
+                if counter >= self.batch_size:
+                    break
+        if len(task_ref) == 0:
+            return [], [], []
+
+        max_len = max([q.shape[1] for q in query_batch])
+        for i in range(len(query_batch)):
+            q = query_batch[i]
+            query_batch[i] = torch.cat([q, torch.zeros([1, max_len - q.shape[1], 2])], axis=1)
+        img_batch = torch.stack(img_batch)
+        query_batch = torch.cat(query_batch)
+        return task_ref, img_batch, query_batch
+
+    def cotr_corr_multiscale(self, img_a, img_b, zoom_ins=[1.0], converge_iters=1, max_corrs=1000, queries_a=None, return_idx=False, force=False, return_tasks_only=False):
+        '''
+        currently only support fixed queries_a
+        '''
+        img_a = img_a.copy()
+        img_b = img_b.copy()
+        img_a_shape = img_a.shape[:2]
+        img_b_shape = img_b.shape[:2]
+        if queries_a is not None:
+            queries_a = queries_a.copy()
+        tasks = self.gen_tasks(img_a, img_b, zoom_ins, converge_iters, max_corrs, queries_a, force)
+        for zm in zoom_ins:
+            print(f'======= Zoom: {zm} ======')
+            while True:
+                num_g = self.num_good_tasks(tasks)
+                task_ref, img_batch, query_batch = self.form_grouped_batch(zm, tasks)
+                if len(task_ref) == 0:
+                    break
+                if num_g >= max_corrs:
+                    break
+                out = self.infer_batch_grouped(img_batch, query_batch)
+                num_steps = 0
+                for i, temp in enumerate(task_ref):
+                    for j, t in enumerate(temp):
+                        t.step(out[i, j])
+                        num_steps += 1
+                print(f'solved {num_steps} sub-tasks in one invocation with {img_batch.shape[0]} image pairs')
+                if num_steps <= self.batch_size:
+                    break
+            # Rollback to default inference, because of too few valid tasks can be grouped together.
+            while True:
+                num_g = self.num_good_tasks(tasks)
+                print(f'{num_g} / {max_corrs} | {self.num_finished_tasks(tasks)} / {len(tasks)}')
+                task_ref, img_batch, query_batch = self.form_batch(tasks, zm)
+                if len(task_ref) == 0:
+                    break
+                if num_g >= max_corrs:
+                    break
+                out = self.infer_batch(img_batch, query_batch)
+                for t, o in zip(task_ref, out):
+                    t.step(o)
+
+        if return_tasks_only:
+            return tasks
+        if return_idx:
+            corrs, idx = self.conclude_tasks(tasks, return_idx=True, force=force,
+                                             img_a_shape=img_a_shape,
+                                             img_b_shape=img_b_shape,)
+            corrs = corrs[:max_corrs]
+            idx = idx[:max_corrs]
+            return corrs, idx
+        else:
+            corrs = self.conclude_tasks(tasks, force=force,
+                                        img_a_shape=img_a_shape,
+                                        img_b_shape=img_b_shape,)
+            corrs = corrs[:max_corrs]
+            return corrs

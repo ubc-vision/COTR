@@ -5,19 +5,15 @@ import argparse
 import os
 import time
 
-import cv2
 import numpy as np
 import torch
 import imageio
-import matplotlib.pyplot as plt
 import open3d as o3d
-import pydegensac
 
 from COTR.utils import utils, debug_utils
 from COTR.models import build_model
 from COTR.options.options import *
 from COTR.options.options_utils import *
-from COTR.inference.inference_helper import triangulate_corr
 from COTR.inference.sparse_engine import SparseEngine, FasterSparseEngine
 from COTR.projector import pcd_projector
 
@@ -52,10 +48,7 @@ def main(opt):
     t0 = time.time()
     corrs = engine.cotr_corr_multiscale_with_cycle_consistency(img_a, img_b, np.linspace(0.5, 0.0625, 4), 1, max_corrs=opt.max_corrs, queries_a=None)
     t1 = time.time()
-
     print(f'spent {t1-t0} seconds for {opt.max_corrs} correspondences.')
-    _, inliers_mask = pydegensac.findFundamentalMatrix(corrs[:, :2], corrs[:, 2:], 0.5, 0.999999, 100000)
-    corrs = corrs[inliers_mask]
 
     camera_a = np.load('./sample_data/camera_0.npy', allow_pickle=True).item()
     camera_b = np.load('./sample_data/camera_1.npy', allow_pickle=True).item()
@@ -63,7 +56,6 @@ def main(opt):
     center_b = camera_b['cam_center']
     rays_a = pcd_projector.PointCloudProjector.pcd_2d_to_pcd_3d_np(corrs[:, :2], np.ones([corrs.shape[0], 1]) * 2, camera_a['intrinsic'], motion=camera_a['c2w'])
     rays_b = pcd_projector.PointCloudProjector.pcd_2d_to_pcd_3d_np(corrs[:, 2:], np.ones([corrs.shape[0], 1]) * 2, camera_b['intrinsic'], motion=camera_b['c2w'])
-
     dir_a = rays_a - center_a
     dir_b = rays_b - center_b
     center_a = np.array([center_a] * corrs.shape[0])

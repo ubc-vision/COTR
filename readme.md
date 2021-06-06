@@ -64,6 +64,15 @@ Example:
   <img src="./sample_data/imgs/guided_matching_output.png" height="400">
 </p>
 
+### 7. Two view reconstruction demo
+
+Note: this demo uses both known camera intrinsic and extrinsic.
+`python demo_reconstruction.py --load_weights="default" --max_corrs=2048 --faster_infer=yes`
+
+<p align="center">
+  <img src="./sample_data/imgs/recon_output.png" height="250">
+</p>
+
 ## Faster Inference
 
 We added a faster inference engine.

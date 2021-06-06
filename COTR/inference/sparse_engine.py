@@ -384,18 +384,18 @@ class FasterSparseEngine(SparseEngine):
                 print(f'solved {num_steps} sub-tasks in one invocation with {img_batch.shape[0]} image pairs')
                 if num_steps <= self.batch_size:
                     break
-            # Rollback to default inference, because of too few valid tasks can be grouped together.
-            while True:
-                num_g = self.num_good_tasks(tasks)
-                print(f'{num_g} / {max_corrs} | {self.num_finished_tasks(tasks)} / {len(tasks)}')
-                task_ref, img_batch, query_batch = self.form_batch(tasks, zm)
-                if len(task_ref) == 0:
-                    break
-                if num_g >= max_corrs:
-                    break
-                out = self.infer_batch(img_batch, query_batch)
-                for t, o in zip(task_ref, out):
-                    t.step(o)
+        # Rollback to default inference, because of too few valid tasks can be grouped together.
+        while True:
+            num_g = self.num_good_tasks(tasks)
+            print(f'{num_g} / {max_corrs} | {self.num_finished_tasks(tasks)} / {len(tasks)}')
+            task_ref, img_batch, query_batch = self.form_batch(tasks, zm)
+            if len(task_ref) == 0:
+                break
+            if num_g >= max_corrs:
+                break
+            out = self.infer_batch(img_batch, query_batch)
+            for t, o in zip(task_ref, out):
+                t.step(o)
 
         if return_tasks_only:
             return tasks

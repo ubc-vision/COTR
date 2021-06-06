@@ -57,9 +57,6 @@ def main(opt):
     _, inliers_mask = pydegensac.findFundamentalMatrix(corrs[:, :2], corrs[:, 2:], 0.5, 0.999999, 100000)
     corrs = corrs[inliers_mask]
 
-    points = []
-    colors = []
-
     camera_a = np.load('./sample_data/camera_0.npy', allow_pickle=True).item()
     camera_b = np.load('./sample_data/camera_1.npy', allow_pickle=True).item()
     center_a = camera_a['cam_center']

@@ -3,6 +3,8 @@
 This repository contains the inference code for COTR. We plan to release the training code in the future.
 COTR establishes correspondence in a functional and end-to-end fashion. It solves dense and sparse correspondence problem in the same framework.
 
+[arXiv](https://arxiv.org/abs/2103.14167)
+
 ## Demos
 
 Check out our demo video at [here](https://jiangwei221.github.io/vids/cotr/README.html).

@@ -39,7 +39,8 @@ def float_image_resize(img, shape, interp=cv2.INTER_LINEAR):
     layers = []
     img = img.transpose(2, 0, 1)
     for l in img:
-        l = cv2.resize(l, shape, interpolation=interp)
+        l = cv2.resize(l, shape[::-1], interpolation=interp)
+        assert l.shape[:2] == shape
         layers.append(l)
     if missing_channel:
         return np.stack(layers, axis=-1)[..., 0]

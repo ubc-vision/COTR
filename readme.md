@@ -15,7 +15,6 @@ Our implementation is based on PyTorch. Install the conda environment by: `conda
 
 Activate the environment by: `conda activate cotr_env`.
 
-Notice that we use `scipy=1.2.1` .
 
 
 ### 2. Download the pretrained weights

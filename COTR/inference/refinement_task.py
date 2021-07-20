@@ -3,9 +3,8 @@ import time
 import numpy as np
 import torch
 from torchvision.transforms import functional as tvtf
-import scipy
-from scipy import misc
 import imageio
+import cv2
 
 from COTR.inference.inference_helper import BASE_ZOOM, THRESHOLD_PIXELS_RELATIVE, get_patch_centered_at, two_images_side_by_side, find_prediction_loop
 from COTR.utils import debug_utils, utils
@@ -115,8 +114,8 @@ class RefinementTask():
         assert img_from.shape[0] == img_from.shape[1]
         assert img_to.shape[0] == img_to.shape[1]
 
-        img_from = misc.imresize(img_from, (MAX_SIZE, MAX_SIZE), interp='bilinear')
-        img_to = misc.imresize(img_to, (MAX_SIZE, MAX_SIZE), interp='bilinear')
+        img_from = cv2.resize(img_from, (MAX_SIZE, MAX_SIZE), interpolation=cv2.INTER_LINEAR)
+        img_to = cv2.resize(img_to, (MAX_SIZE, MAX_SIZE), interpolation=cv2.INTER_LINEAR)
         img = two_images_side_by_side(img_from, img_to)
         img = tvtf.normalize(tvtf.to_tensor(img), (0.485, 0.456, 0.406), (0.229, 0.224, 0.225)).float()
 

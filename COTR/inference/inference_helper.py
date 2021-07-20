@@ -5,7 +5,6 @@ import numpy as np
 import torch
 from torchvision.transforms import functional as tvtf
 from tqdm import tqdm
-from scipy import misc
 
 from COTR.utils import utils, debug_utils
 from COTR.utils.constants import MAX_SIZE
@@ -16,6 +15,7 @@ THRESHOLD_SPARSE = 0.02
 THRESHOLD_PIXELS_RELATIVE = 0.02
 BASE_ZOOM = 1.0
 THRESHOLD_AREA = 0.02
+LARGE_GPU = True
 
 
 def find_prediction_loop(arr):
@@ -103,12 +103,11 @@ def get_patch_centered_at(img, pos, scale=1.0, return_content=True, img_shape=No
 
 def cotr_patch_flow_exhaustive(model, patches_a, patches_b):
     def one_pass(model, img_a, img_b):
-        LARGE_GPU = True
         device = next(model.parameters()).device
         img_a = crop_center_max_np(img_a)
         img_b = crop_center_max_np(img_b)
-        img_a = misc.imresize(img_a, (MAX_SIZE, MAX_SIZE), interp='bilinear')
-        img_b = misc.imresize(img_b, (MAX_SIZE, MAX_SIZE), interp='bilinear')
+        img_a = cv2.resize(img_a, (MAX_SIZE, MAX_SIZE), interpolation=cv2.INTER_LINEAR)
+        img_b = cv2.resize(img_b, (MAX_SIZE, MAX_SIZE), interpolation=cv2.INTER_LINEAR)
         img = two_images_side_by_side(img_a, img_b)
         img = tvtf.normalize(tvtf.to_tensor(img), (0.485, 0.456, 0.406), (0.229, 0.224, 0.225)).float()[None]
         img = img.to(device)

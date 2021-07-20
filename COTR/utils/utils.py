@@ -9,7 +9,6 @@ import numpy as np
 import torch
 import cv2
 import matplotlib.pyplot as plt
-from scipy.misc import imresize
 
 
 '''
@@ -32,7 +31,7 @@ def fix_randomness(seed=42):
     np.random.seed(seed)
 
 
-def float_image_resize(img, shape, interp='bilinear'):
+def float_image_resize(img, shape, interp=cv2.INTER_LINEAR):
     missing_channel = False
     if len(img.shape) == 2:
         missing_channel = True
@@ -40,7 +39,7 @@ def float_image_resize(img, shape, interp='bilinear'):
     layers = []
     img = img.transpose(2, 0, 1)
     for l in img:
-        l = imresize(l, shape, interp=interp, mode='F')
+        l = cv2.resize(l, shape, interpolation=interp)
         layers.append(l)
     if missing_channel:
         return np.stack(layers, axis=-1)[..., 0]
@@ -175,8 +174,8 @@ def visualize_corrs(img1, img2, corrs, mask=None):
     if w > max_w:
         scale1 *= max_w / w
         scale2 *= max_w / w
-    img1 = imresize(img1, scale1)
-    img2 = imresize(img2, scale2)
+    img1 = cv2.resize(img1, (0,0), fx=scale1, fy=scale1)
+    img2 = cv2.resize(img2, (0,0), fx=scale2, fy=scale2)
 
     x1, x2 = corrs[:, :2], corrs[:, 2:]
     h1, w1 = img1.shape[:2]

@@ -13,7 +13,6 @@ import torch
 import numpy as np
 import imageio
 from PIL import Image
-from scipy import misc
 
 
 def crop_center_max(img):
@@ -101,4 +100,4 @@ def pad_to_square_np(img, till_divisible_by=1, return_starts=False):
 
 def stretch_to_square_np(img):
     size = max(*img.shape[:2])
-    return misc.imresize(img, (size, size), interp='bilinear')
+    return cv2.resize(img, (size, size), interpolation=cv2.INTER_LINEAR)

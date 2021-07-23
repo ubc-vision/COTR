@@ -10,7 +10,7 @@ from torchvision.transforms import functional as tvtf
 from torch.utils import data
 
 from COTR.datasets import megadepth_dataset
-from COTR.utils import debug_utils, utils, constants, relative_pose
+from COTR.utils import debug_utils, utils, constants
 from COTR.projector import pcd_projector
 from COTR.cameras import capture
 from COTR.utils.utils import CropCamConfig

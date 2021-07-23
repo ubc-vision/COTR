@@ -9,6 +9,7 @@ import numpy as np
 import torch
 import cv2
 import matplotlib.pyplot as plt
+import PIL
 
 
 '''
@@ -21,6 +22,36 @@ ImagePatch: patch: patch content, np array or None
             oh: height of original resolution
 '''
 ImagePatch = namedtuple('ImagePatch', ['patch', 'x', 'y', 'w', 'h', 'ow', 'oh'])
+Point3D = namedtuple("Point3D", ["id", "arr_idx", "image_ids"])
+Point2D = namedtuple("Point2D", ["id_3d", "xy"])
+
+
+class CropCamConfig():
+    def __init__(self, x, y, w, h, out_w, out_h, orig_w, orig_h):
+        '''
+        xy: left upper corner
+        '''
+        # assert x > 0 and x < orig_w
+        # assert y > 0 and y < orig_h
+        # assert w < orig_w and h < orig_h
+        # assert x - w / 2 > 0 and x + w / 2 < orig_w
+        # assert y - h / 2 > 0 and y + h / 2 < orig_h
+        # assert h / w == out_h / out_w
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.out_w = out_w
+        self.out_h = out_h
+        self.orig_w = orig_w
+        self.orig_h = orig_h
+
+    def __str__(self):
+        out = f'original image size(h,w): [{self.orig_h}, {self.orig_w}]\n'
+        out += f'crop at(x,y):             [{self.x}, {self.y}]\n'
+        out += f'crop size(h,w):           [{self.h}, {self.w}]\n'
+        out += f'resize crop to(h,w):      [{self.out_h}, {self.out_w}]'
+        return out
 
 
 def fix_randomness(seed=42):

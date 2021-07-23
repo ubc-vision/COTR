@@ -67,7 +67,7 @@ Activate the environment by: `conda activate cotr_env`.
 
 ### 2. Download the pretrained weights
 
-Down load the pretrained weights at [here](https://www.cs.ubc.ca/research/kmyi_data/files/2021/cotr/default.zip). Extract in to `./out`, such that the weights file is at `/out/default/checkpoint.pth.tar`.
+Download the pretrained weights at [here](https://www.cs.ubc.ca/research/kmyi_data/files/2021/cotr/default.zip). Extract in to `./out`, such that the weights file is at `/out/default/checkpoint.pth.tar`.
 
 ### 3. Single image pair demo
 

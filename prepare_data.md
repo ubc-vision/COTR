@@ -42,4 +42,4 @@ The size of the distance matrix is N by N, where N is the number of images with 
 
 The index of the matrix aligns with the order in the "images.txt", thus we require at least python 3.7 which uses ordered dictionary as default.
 
-Use `prepare_nn_distance_mat.py` to generate the distance matrix, or use the provided distance matrix([Google Drive](https://drive.google.com/u/0/uc?id=1_4OeHSkTlGuut1ipq4Odt-jpoG-te4ud&export=download)).
+Use `prepare_nn_distance_mat.py` to generate the distance matrix, or use the provided distance matrix([link](https://www.cs.ubc.ca/research/kmyi_data/files/2021/cotr/MegaDepth_v1.zip)).

@@ -62,6 +62,10 @@ def fix_randomness(seed=42):
     np.random.seed(seed)
 
 
+def worker_init_fn(worker_id):
+    np.random.seed(np.random.get_state()[1][0] + worker_id)
+
+
 def float_image_resize(img, shape, interp=PIL.Image.BILINEAR):
     missing_channel = False
     if len(img.shape) == 2:

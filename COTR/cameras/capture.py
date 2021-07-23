@@ -275,23 +275,22 @@ class CapturedDepth(CapturedContent):
             if self.rotation != 0:
                 _depth = rotate_image(_depth, self.rotation, interpolation=cv2.INTER_NEAREST)
             if _depth.shape != self.pinhole_cam_before.shape:
-                exec(debug_utils.embed_breakpoint())
-                _depth = misc.imresize(_depth, self.pinhole_cam_before.shape, interp='nearest', mode='F')
+                _depth = np.array(PIL.Image.fromarray(_depth).resize(self.pinhole_cam_before.shape[::-1], resample=PIL.Image.NEAREST))
+                assert _depth.shape[:2] == self.pinhole_cam_before.shape
             if self.crop_cam == 'no_crop':
                 pass
             elif self.crop_cam == 'crop_center':
                 _depth = crop_center_max(_depth)
             elif self.crop_cam == 'crop_center_and_resize':
                 _depth = crop_center_max(_depth)
-                exec(debug_utils.embed_breakpoint())
-                _depth = misc.imresize(_depth, (MAX_SIZE, MAX_SIZE), interp='nearest', mode='F')
+                _depth = np.array(PIL.Image.fromarray(_depth).resize((MAX_SIZE, MAX_SIZE), resample=PIL.Image.NEAREST))
             elif isinstance(self.crop_cam, CropCamConfig):
                 assert _depth.shape[0] == self.crop_cam.orig_h
                 assert _depth.shape[1] == self.crop_cam.orig_w
                 _depth = _depth[self.crop_cam.y:self.crop_cam.y + self.crop_cam.h,
                                 self.crop_cam.x:self.crop_cam.x + self.crop_cam.w, ]
-                exec(debug_utils.embed_breakpoint())
-                _depth = misc.imresize(_depth, (self.crop_cam.out_h, self.crop_cam.out_w), interp='nearest', mode='F')
+                _depth = np.array(PIL.Image.fromarray(_depth).resize((self.crop_cam.out_w, self.crop_cam.out_h), resample=PIL.Image.NEAREST))
+                assert _depth.shape[:2] == (self.crop_cam.out_h, self.crop_cam.out_w)
             else:
                 raise ValueError()
         assert (_depth >= 0).all()

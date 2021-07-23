@@ -12,6 +12,7 @@ import cv2
 import torch
 import numpy as np
 import imageio
+import PIL
 from PIL import Image
 
 
@@ -100,4 +101,4 @@ def pad_to_square_np(img, till_divisible_by=1, return_starts=False):
 
 def stretch_to_square_np(img):
     size = max(*img.shape[:2])
-    return cv2.resize(img, (size, size), interpolation=cv2.INTER_LINEAR)
+    return np.array(PIL.Image.fromarray(img).resize((size, size), resample=PIL.Image.BILINEAR))

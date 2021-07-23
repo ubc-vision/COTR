@@ -1,2 +1,41 @@
+{
+  "megadepth": {
+    "valid_list_json": "/media/jiangwei/data_ssd/MegaDepth_v1_SfM/megadepth_valid_list.json",
+    "train_json": "/media/jiangwei/data_ssd/MegaDepth_v1_SfM/megadepth_train.json",
+    "val_json": "/media/jiangwei/data_ssd/MegaDepth_v1_SfM/megadepth_val.json",
+    "test_json": "/media/jiangwei/data_ssd/MegaDepth_v1_SfM/megadepth_test.json",
+    "scene_dir": "/media/jiangwei/data_ssd/MegaDepth_v1_SfM/{0}/sparse/manhattan/{1}_rectified/sparse",
+    "image_dir": "/media/jiangwei/data_ssd/MegaDepth_v1/phoenix/S6/zl548/MegaDepth_v1/{0}/dense{1}/imgs",
+    "depth_dir": "/media/jiangwei/data_ssd/MegaDepth_v1/phoenix/S6/zl548/MegaDepth_v1/{0}/dense{1}/depths"
+  },
 
-{}
+  "megadepth_sushi": {
+    "valid_list_json": "/scratch/dataset/megadepth/MegaDepth_v1_SfM/megadepth_valid_list.json",
+    "train_json": "/scratch/programs/COTR/sample_data/megadepth_train.json",
+    "val_json": "/scratch/programs/COTR/sample_data/megadepth_val.json",
+    "test_json": "/scratch/dataset/megadepth/MegaDepth_v1_SfM/megadepth_test.json",
+    "scene_dir": "/scratch/dataset/megadepth/MegaDepth_v1_SfM/{0}/sparse/manhattan/{1}_rectified/sparse",
+    "image_dir": "/scratch/dataset/megadepth/MegaDepth_v1/phoenix/S6/zl548/MegaDepth_v1/{0}/dense{1}/imgs",
+    "depth_dir": "/scratch/dataset/megadepth/MegaDepth_v1/phoenix/S6/zl548/MegaDepth_v1/{0}/dense{1}/depths"
+  },
+
+  "megadepth_sockeye": {
+    "valid_list_json": "/project/pr-kmyi-1/jiangwei/datasets/megadepth/MegaDepth_v1_SfM/megadepth_valid_list.json",
+    "train_json": "/project/pr-kmyi-1/jiangwei/datasets/megadepth/MegaDepth_v1_SfM/megadepth_train.json",
+    "val_json": "/project/pr-kmyi-1/jiangwei/datasets/megadepth/MegaDepth_v1_SfM/megadepth_val.json",
+    "test_json": "/project/pr-kmyi-1/jiangwei/datasets/megadepth/MegaDepth_v1_SfM/megadepth_test.json",
+    "scene_dir": "/project/pr-kmyi-1/jiangwei/datasets/megadepth/MegaDepth_v1_SfM/{0}/sparse/manhattan/{1}_rectified/sparse",
+    "image_dir": "/project/pr-kmyi-1/jiangwei/datasets/megadepth/MegaDepth_v1/phoenix/S6/zl548/MegaDepth_v1/{0}/dense{1}/imgs",
+    "depth_dir": "/project/pr-kmyi-1/jiangwei/datasets/megadepth/MegaDepth_v1/phoenix/S6/zl548/MegaDepth_v1/{0}/dense{1}/depths"
+  },
+
+  "megadepth_snubfin": {
+    "valid_list_json": "/ubc/cs/research/kmyi/datasets/megadepth/MegaDepth_v1_SfM/megadepth_valid_list.json",
+    "train_json": "/ubc/cs/research/kmyi/jw221/programs/COTR/sample_data/megadepth_train.json",
+    "val_json": "/ubc/cs/research/kmyi/jw221/programs/COTR/sample_data/megadepth_val.json",
+    "test_json": "/ubc/cs/research/kmyi/datasets/megadepth/MegaDepth_v1_SfM/megadepth_test.json",
+    "scene_dir": "/ubc/cs/research/kmyi/datasets/megadepth/MegaDepth_v1_SfM/{0}/sparse/manhattan/{1}_rectified/sparse",
+    "image_dir": "/ubc/cs/research/kmyi/datasets/megadepth/MegaDepth_v1/phoenix/S6/zl548/MegaDepth_v1/{0}/dense{1}/imgs",
+    "depth_dir": "/ubc/cs/research/kmyi/datasets/megadepth/MegaDepth_v1/phoenix/S6/zl548/MegaDepth_v1/{0}/dense{1}/depths"
+  }
+}

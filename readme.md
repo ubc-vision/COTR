@@ -3,7 +3,7 @@
 This repository contains the inference code for COTR. We plan to release the training code in the future.
 COTR establishes correspondence in a functional and end-to-end fashion. It solves dense and sparse correspondence problem in the same framework.
 
-[arXiv](https://arxiv.org/abs/2103.14167)
+[[arXiv]](https://arxiv.org/abs/2103.14167), [[video]](https://jiangwei221.github.io/vids/cotr/README.html), [[pretrained_weights]](https://www.cs.ubc.ca/research/kmyi_data/files/2021/cotr/default.zip), [[distance_matrix]](https://www.cs.ubc.ca/research/kmyi_data/files/2021/cotr/MegaDepth_v1.zip)
 
 ##  Training
 
@@ -19,7 +19,7 @@ Add an entry inside `COTR/global_configs/dataset_config.json` which is correct o
 
 `train_json/val_json/test_json`:  The splits json files, see  `3. Train/val/test split` in `Scripts to generate dataset`.
 
-`scene_dir`: Path to Megadepth SfM folder. `{0}{1}` are scene and sequence id used by f-string.
+`scene_dir`: Path to Megadepth SfM folder(rectified ones!). `{0}{1}` are scene and sequence id used by f-string.
 
 `image_dir/depth_dir`: Path to images and depth maps of Megadepth.
 

@@ -28,7 +28,7 @@ Use `prepare_megadepth_split.py` to generate the split, or use the provided spli
 
 We use another json file to control the sequences we want to use during training. It allows us to use a smaller sequence to debug, and remove some unwanted sequences.
 
-Notice that in the final training(current version), we remove the overlapping scenes with IMW dataset as mentioned here: https://www.cs.ubc.ca/research/image-matching-challenge/submit/.
+Notice that in the final training(current version), we remove the overlapping scenes with IMW dataset as mentioned [here](https://www.cs.ubc.ca/research/image-matching-challenge/2020/submit/).
 
 Build you own sequence control json, or use the provided ones(`200_megadepth.json` for default training, and `debug_megadepth.json` for debugging).
 

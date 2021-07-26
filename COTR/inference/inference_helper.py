@@ -105,8 +105,8 @@ def get_patch_centered_at(img, pos, scale=1.0, return_content=True, img_shape=No
 def cotr_patch_flow_exhaustive(model, patches_a, patches_b):
     def one_pass(model, img_a, img_b):
         device = next(model.parameters()).device
-        img_a = crop_center_max_np(img_a)
-        img_b = crop_center_max_np(img_b)
+        assert img_a.shape[0] == img_a.shape[1]
+        assert img_b.shape[0] == img_b.shape[1]
         img_a = np.array(PIL.Image.fromarray(img_a).resize((MAX_SIZE, MAX_SIZE), resample=PIL.Image.BILINEAR))
         img_b = np.array(PIL.Image.fromarray(img_b).resize((MAX_SIZE, MAX_SIZE), resample=PIL.Image.BILINEAR))
         img = two_images_side_by_side(img_a, img_b)
@@ -124,7 +124,7 @@ def cotr_patch_flow_exhaustive(model, patches_a, patches_b):
             try:
                 queries = torch.from_numpy(np.concatenate(q_list))[None].float().to(device)
                 out = model.forward(img, queries)['pred_corrs'].detach().cpu().numpy()[0]
-                out_list = out.reshape(MAX_SIZE, MAX_SIZE* 2, -1)
+                out_list = out.reshape(MAX_SIZE, MAX_SIZE * 2, -1)
             except:
                 assert 0, 'set LARGE_GPU to False'
         else:

@@ -23,7 +23,7 @@ Add an entry inside `COTR/global_configs/dataset_config.json` which is correct o
 
 `image_dir/depth_dir`: Path to images and depth maps of Megadepth.
 
-### 2. Example command
+### 3. Example command
 
 ```python train_cotr.py --scene_file sample_data/jsons/debug_megadepth.json  --dataset_name=megadepth --info_level=rgbd --use_ram=no --batch_size=2 --lr_backbone=1e-4 --max_iter=200 --valid_iter=10 --workers=4 --confirm=no```
 
@@ -39,7 +39,7 @@ Add an entry inside `COTR/global_configs/dataset_config.json` which is correct o
 
 `load_weights`: Load a pretrained weights, only need to model name, it will automatically find the folder with the same name under the output folder, and load the "checkpoint.pth.tar".
 
-### 3. Our training commands
+### 4. Our training commands
 
 As stated in the paper, we have 3 training stages. The machine we used has 1 RTX 3090, i7-10700, and 128G RAM. We store the training data inside the main memory during the first two stages.
 

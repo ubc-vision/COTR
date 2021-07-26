@@ -8,7 +8,7 @@ import random
 import numpy as np
 import torch
 
-from COTR.inference.inference_helper import THRESHOLD_SPARSE, THRESHOLD_AREA, cotr_flow
+from COTR.inference.inference_helper import THRESHOLD_SPARSE, THRESHOLD_AREA, cotr_flow, cotr_corr_base
 from COTR.inference.refinement_task import RefinementTask
 from COTR.utils import debug_utils, utils
 from COTR.cameras.capture import stretch_to_square_np
@@ -97,7 +97,20 @@ class SparseEngine():
                 counter += 1
         return counter
 
-    def gen_tasks(self, img_a, img_b, zoom_ins=[1.0], converge_iters=1, max_corrs=1000, queries_a=None, force=False):
+    def gen_tasks_w_known_scale(self, img_a, img_b, queries_a, areas, zoom_ins=[1.0], converge_iters=1, max_corrs=1000):
+        assert self.mode == 'tile'
+        corr_a = cotr_corr_base(self.model, img_a, img_b, queries_a)
+        tasks = []
+        for c in corr_a:
+            tasks.append(RefinementTask(img_a, img_b, c[:2], c[2:], areas[0], areas[1], converge_iters, zoom_ins))
+        return tasks
+
+    def gen_tasks(self, img_a, img_b, zoom_ins=[1.0], converge_iters=1, max_corrs=1000, queries_a=None, force=False, areas=None):
+        if areas is not None:
+            assert queries_a is not None
+            assert force == True
+            assert max_corrs >= queries_a.shape[0]
+            return self.gen_tasks_w_known_scale(img_a, img_b, queries_a, areas, zoom_ins=zoom_ins, converge_iters=converge_iters, max_corrs=max_corrs)
         if self.mode == 'stretching':
             if img_a.shape[0] != img_a.shape[1] or img_b.shape[0] != img_b.shape[1]:
                 img_a_shape = img_a.shape
@@ -181,7 +194,7 @@ class SparseEngine():
                             counter += 1
         return tasks
 
-    def cotr_corr_multiscale(self, img_a, img_b, zoom_ins=[1.0], converge_iters=1, max_corrs=1000, queries_a=None, return_idx=False, force=False, return_tasks_only=False):
+    def cotr_corr_multiscale(self, img_a, img_b, zoom_ins=[1.0], converge_iters=1, max_corrs=1000, queries_a=None, return_idx=False, force=False, return_tasks_only=False, areas=None):
         '''
         currently only support fixed queries_a
         '''
@@ -191,7 +204,7 @@ class SparseEngine():
         img_b_shape = img_b.shape[:2]
         if queries_a is not None:
             queries_a = queries_a.copy()
-        tasks = self.gen_tasks(img_a, img_b, zoom_ins, converge_iters, max_corrs, queries_a, force)
+        tasks = self.gen_tasks(img_a, img_b, zoom_ins, converge_iters, max_corrs, queries_a, force, areas)
         while True:
             num_g = self.num_good_tasks(tasks)
             print(f'{num_g} / {max_corrs} | {self.num_finished_tasks(tasks)} / {len(tasks)}')
@@ -355,7 +368,7 @@ class FasterSparseEngine(SparseEngine):
         query_batch = torch.cat(query_batch)
         return task_ref, img_batch, query_batch
 
-    def cotr_corr_multiscale(self, img_a, img_b, zoom_ins=[1.0], converge_iters=1, max_corrs=1000, queries_a=None, return_idx=False, force=False, return_tasks_only=False):
+    def cotr_corr_multiscale(self, img_a, img_b, zoom_ins=[1.0], converge_iters=1, max_corrs=1000, queries_a=None, return_idx=False, force=False, return_tasks_only=False, areas=None):
         '''
         currently only support fixed queries_a
         '''
@@ -365,7 +378,7 @@ class FasterSparseEngine(SparseEngine):
         img_b_shape = img_b.shape[:2]
         if queries_a is not None:
             queries_a = queries_a.copy()
-        tasks = self.gen_tasks(img_a, img_b, zoom_ins, converge_iters, max_corrs, queries_a, force)
+        tasks = self.gen_tasks(img_a, img_b, zoom_ins, converge_iters, max_corrs, queries_a, force, areas)
         for zm in zoom_ins:
             print(f'======= Zoom: {zm} ======')
             while True:

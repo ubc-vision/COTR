@@ -122,6 +122,16 @@ Note: this demo uses both known camera intrinsic and extrinsic.
   <img src="./sample_data/imgs/recon_output.png" height="250">
 </p>
 
+### 8. Annotation suggestions
+
+If the annotator knows the scale difference of two buildings, then COTR can skip the scale estimation step.
+`python demo_wbs.py --load_weights="default"`
+
+<p align="center">
+  <img src="./sample_data/imgs/annotation_output.png" height="250">
+</p>
+
+
 ## Faster Inference
 
 We added a faster inference engine.

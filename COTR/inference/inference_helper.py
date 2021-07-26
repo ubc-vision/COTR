@@ -181,6 +181,57 @@ def cotr_flow(model, img_a, img_b):
                                                                            torch.from_numpy(corr_b)[None].float())[0])
     return corr_a, con_a, resample_a, corr_b, con_b, resample_b
 
+
+def cotr_corr_base(model, img_a, img_b, queries_a):
+    def one_pass(model, img_a, img_b, queries):
+        device = next(model.parameters()).device
+        assert img_a.shape[0] == img_a.shape[1]
+        assert img_b.shape[0] == img_b.shape[1]
+        img_a = np.array(PIL.Image.fromarray(img_a).resize((MAX_SIZE, MAX_SIZE), resample=PIL.Image.BILINEAR))
+        img_b = np.array(PIL.Image.fromarray(img_b).resize((MAX_SIZE, MAX_SIZE), resample=PIL.Image.BILINEAR))
+        img = two_images_side_by_side(img_a, img_b)
+        img = tvtf.normalize(tvtf.to_tensor(img), (0.485, 0.456, 0.406), (0.229, 0.224, 0.225)).float()[None]
+        img = img.to(device)
+
+        queries = torch.from_numpy(queries)[None].float().to(device)
+        out = model.forward(img, queries)['pred_corrs'].clone().detach()
+        cycle = model.forward(img, out)['pred_corrs'].clone().detach()
+
+        queries = queries.cpu().numpy()[0]
+        out = out.cpu().numpy()[0]
+        cycle = cycle.cpu().numpy()[0]
+        conf = np.linalg.norm(queries - cycle, axis=1, keepdims=True)
+        return np.concatenate([out, conf], axis=1)
+
+    patches_a = to_square_patches(img_a)
+    patches_b = to_square_patches(img_b)
+    pred_list = []
+
+    for p_i in patches_a:
+        for p_j in patches_b:
+            normalized_queries_a = queries_a.copy()
+            mask = (normalized_queries_a[:, 0] >= p_i.x) & (normalized_queries_a[:, 1] >= p_i.y) & (normalized_queries_a[:, 0] <= p_i.x + p_i.w) & (normalized_queries_a[:, 1] <= p_i.y + p_i.h)
+            normalized_queries_a[:, 0] -= p_i.x
+            normalized_queries_a[:, 1] -= p_i.y
+            normalized_queries_a[:, 0] /= 2 * p_i.w
+            normalized_queries_a[:, 1] /= p_i.h
+            pred = one_pass(model, p_i.patch, p_j.patch, normalized_queries_a)
+            pred[~mask, 2] = np.inf
+            pred[:, 0] -= 0.5
+            pred[:, 0] *= 2 * p_j.w
+            pred[:, 0] += p_j.x
+            pred[:, 1] *= p_j.h
+            pred[:, 1] += p_j.y
+            pred_list.append(pred)
+
+    pred_list = np.stack(pred_list).transpose(1, 0, 2)
+    out = []
+    for item in pred_list:
+        out.append(item[np.argmin(item[..., 2], axis=0)])
+    out = np.array(out)[..., :2]
+    return np.concatenate([queries_a, out], axis=1)
+
+
 try:
     from vispy import gloo
     from vispy import app

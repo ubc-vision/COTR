@@ -1,4 +1,4 @@
-# COTR: Correspondence Transformer for Matching Across Images
+# COTR: Correspondence Transformer for Matching Across Images (ICCV 2021)
 
 This repository is a reference implementation for COTR.
 COTR establishes correspondence in a functional and end-to-end fashion. It solves dense and sparse correspondence problem in the same framework.
@@ -13,9 +13,11 @@ See `prepare_data.md`.
 
 ### 2. Setup configuration json
 
-Add an entry inside `COTR/global_configs/dataset_config.json` which is correct on your system. In the provided `dataset_config.json`, we have different configuration for different clusters.
+Add an entry inside `COTR/global_configs/dataset_config.json`, make sure it is correct on your system. In the provided `dataset_config.json`, we have different configurations for different clusters.
 
- `valid_list_json`: The valid list json file, see `2. Valid list` in `Scripts to generate dataset`.
+Explanations on some json parameters:
+
+`valid_list_json`: The valid list json file, see `2. Valid list` in `Scripts to generate dataset`.
 
 `train_json/val_json/test_json`:  The splits json files, see  `3. Train/val/test split` in `Scripts to generate dataset`.
 
@@ -31,13 +33,13 @@ Add an entry inside `COTR/global_configs/dataset_config.json` which is correct o
 
 `use_ram`: Set to "yes" to load data into maim memory.
 
-`crop_cam`: How to crop the image, it will change the corresponding camera intrinsic.
+`crop_cam`: How to crop the image, it will change the camera intrinsic accordingly.
 
 `scene_file`: The sequence control file.
 
 `suffix`: Give the model a unique suffix.
 
-`load_weights`: Load a pretrained weights, only need to model name, it will automatically find the folder with the same name under the output folder, and load the "checkpoint.pth.tar".
+`load_weights`: Load a pretrained weights, only need the model name, it will automatically find the folder with the same name under the output folder, and load the "checkpoint.pth.tar".
 
 ### 4. Our training commands
 
@@ -146,11 +148,10 @@ Try `python demo_guided_matching.py --load_weights="default" --faster_infer=yes`
 If you use this code in your research, cite the paper:
 
 ```
-@article{jiang2021cotr,
+@inproceedings{jiang2021cotr,
   title={{COTR: Correspondence Transformer for Matching Across Images}},
   author={Wei Jiang and Eduard Trulls and Jan Hosang and Andrea Tagliasacchi and Kwang Moo Yi},
-  booktitle={arXiv preprint},
-  publisher_page={https://arxiv.org/abs/2103.14167},
+  booktitle=ICCV,
   year={2021}
 }
 ```

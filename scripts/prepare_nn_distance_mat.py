@@ -17,6 +17,8 @@ from COTR.options.options_utils import *
 from COTR.utils import debug_utils, utils, constants
 from COTR.datasets import colmap_helper
 from COTR.projector import pcd_projector
+from COTR.global_configs import dataset_config
+
 
 assert colmap_helper.COVISIBILITY_CHECK, 'Please enable COVISIBILITY_CHECK'
 assert colmap_helper.LOAD_PCD, 'Please enable LOAD_PCD'

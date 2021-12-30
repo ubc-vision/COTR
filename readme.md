@@ -145,7 +145,7 @@ Try `python demo_guided_matching.py --load_weights="default" --faster_infer=yes`
 
 ## Citation
 
-If you use this code in your research, cite the paper:
+If you use this code in your research, please cite our paper:
 
 ```
 @inproceedings{jiang2021cotr,

@@ -3,7 +3,7 @@
 This repository is a reference implementation for COTR.
 COTR establishes correspondence in a functional and end-to-end fashion. It solves dense and sparse correspondence problem in the same framework.
 
-[[arXiv]](https://arxiv.org/abs/2103.14167), [[video]](https://jiangwei221.github.io/vids/cotr/README.html), [[pretrained_weights]](https://www.cs.ubc.ca/research/kmyi_data/files/2021/cotr/default.zip), [[distance_matrix]](https://www.cs.ubc.ca/research/kmyi_data/files/2021/cotr/MegaDepth_v1.zip)
+[[arXiv]](https://arxiv.org/abs/2103.14167), [[video]](https://jiangwei221.github.io/vids/cotr/README.html), [[presentation]](https://youtu.be/bOZ12kgfn3E), [[pretrained_weights]](https://www.cs.ubc.ca/research/kmyi_data/files/2021/cotr/default.zip), [[distance_matrix]](https://www.cs.ubc.ca/research/kmyi_data/files/2021/cotr/MegaDepth_v1.zip)
 
 ##  Training
 

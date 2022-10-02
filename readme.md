@@ -31,7 +31,7 @@ Explanations on some json parameters:
 
 **Important arguments:**
 
-`use_ram`: Set to "yes" to load data into maim memory.
+`use_ram`: Set to "yes" to load data into main memory.
 
 `crop_cam`: How to crop the image, it will change the camera intrinsic accordingly.
 
